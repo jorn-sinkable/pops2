@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>System Notification "Hello"</title>
+  <style>
+    html,body{height:100%;margin:0}
+    body{display:grid;place-items:center;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,"Helvetica Neue",Arial}
+    button{padding:.6rem 1rem;border:0;border-radius:.6rem;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+  </style>
+</head>
+<body>
+  <button id="btn">Show System Notification</button>
+
+  <script>
+    async function showSystemNotification() {
+      if (!('Notification' in window)) {
+        alert('Hello');
+        return;
+      }
+
+      let perm = Notification.permission;
+      if (perm !== 'granted') {
+        try { perm = await Notification.requestPermission(); } catch (e) {}
+      }
+
+      if (perm === 'granted') {
+        new Notification('Hello');
+      } else {
+        alert('Hello');
+      }
+    }
+
+    document.getElementById('btn').addEventListener('click', showSystemNotification);
+  </script>
+</body>
+</html>
