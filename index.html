@@ -72,13 +72,15 @@
             } catch { return false; }
         }
         function notify(title, body) {
-            if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification(title, { body });
-            } else {
-                // Fallback to blocking alert if notifications are not available
-                alert(`${title}\n${body || ''}`.trim());
-            }
-        }
+    if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification(title, { 
+            body, 
+            icon: 'hello_hd.png' // ✅ path to your uploaded image
+        });
+    } else {
+        alert(`${title}\n${body || ''}`.trim());
+    }
+}
 
         // Audio init on first interaction
         function initAudio() {
