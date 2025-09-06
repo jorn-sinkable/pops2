@@ -5,22 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MIBSHHL Interval Timer</title>
 
-  <!-- Safari Notification Icons - CRITICAL: Use exact sizes -->
-  <link rel="icon" type="image/png" sizes="16x16" href="hello_hd.png?v=4">
-  <link rel="icon" type="image/png" sizes="32x32" href="hello_hd.png?v=4">
-  <link rel="icon" type="image/png" sizes="128x128" href="hello_hd.png?v=4">
-  
-  <!-- Apple Touch Icons - Safari uses these for notifications -->
-  <link rel="apple-touch-icon" href="hello_hd.png?v=4">
-  <link rel="apple-touch-icon" sizes="120x120" href="hello_hd.png?v=4">
-  <link rel="apple-touch-icon" sizes="152x152" href="hello_hd.png?v=4">
-  <link rel="apple-touch-icon" sizes="180x180" href="hello_hd.png?v=4">
-  
-  <!-- Force Safari to refresh icon -->
-  <link rel="shortcut icon" href="hello_hd.png?v=4">
-  
+  <!-- PWA Support -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="MIBSHHL">
-  <meta name="application-name" content="MIBSHHL">
+  
+  <!-- Icons -->
+  <link rel="icon" type="image/png" href="hello_hd.png">
+  <link rel="apple-touch-icon" href="hello_hd.png">
+  
   <meta name="theme-color" content="#667eea">
 
   <style>
@@ -46,6 +41,7 @@
     button:disabled { opacity: 0.6; cursor: not-allowed; }
     .status { margin-top: 20px; font-size: 1.1rem; opacity: 0.8; }
     .cycle-counter { margin-top: 10px; font-size: 1rem; opacity: 0.7; color: #ffeb3b; }
+    .info { margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px; font-size: 0.9rem; }
   </style>
 </head>
 <body>
@@ -63,6 +59,9 @@
     </div>
     <div class="status" id="status">Ready to start</div>
     <div class="cycle-counter" id="counter">Cycles completed: 0</div>
+    <div class="info" id="info" style="display: none;">
+      💡 For custom notification icons on iPhone/iPad: Add this page to your Home Screen (Share → Add to Home Screen)
+    </div>
   </div>
 
   <script>
@@ -80,6 +79,16 @@
     const status = document.getElementById('status');
     const counter = document.getElementById('counter');
     const intervals = document.querySelectorAll('.interval');
+    const info = document.getElementById('info');
+
+    // Check if on iOS Safari
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isInStandaloneMode = window.navigator.standalone === true;
+    
+    // Show tip for iOS users not in standalone mode
+    if (isIOS && !isInStandaloneMode) {
+      info.style.display = 'block';
+    }
 
     // --- Notification helpers (OS-level toast) ---
     async function ensureNotificationPermission() {
@@ -93,12 +102,13 @@
     
     function notify(title, body) {
       if ('Notification' in window && Notification.permission === 'granted') {
-        // Include the icon parameter for browsers that support it
-        // Safari will ignore this and use the apple-touch-icon instead
+        // Create notification with ABSOLUTE URL for icon
         new Notification(title, { 
           body,
-          icon: 'hello_hd.png',
-          badge: 'hello_hd.png'
+          icon: 'https://jorn-sinkable.github.io/pops2/hello_hd.png',
+          badge: 'https://jorn-sinkable.github.io/pops2/hello_hd.png',
+          tag: 'timer-notification',
+          requireInteraction: false
         });
       } else {
         alert(`${title}\n${body || ''}`.trim());
