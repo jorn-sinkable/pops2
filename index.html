@@ -1,205 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MIBSHHL Interval Timer</title>
-
-  <!-- PWA Support -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="MIBSHHL">
-  
-  <!-- Icons -->
-  <link rel="icon" type="image/png" href="hello_hd.png">
-  <link rel="apple-touch-icon" href="hello_hd.png">
-  
-  <meta name="theme-color" content="#667eea">
-
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh; display: flex; align-items: center; justify-content: center; color: white;
-    }
-    .container { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; text-align: center; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); min-width: 450px; }
-    h1 { margin-bottom: 30px; font-size: 2rem; }
-    .intervals { display: flex; gap: 15px; justify-content: center; margin-bottom: 30px; }
-    .interval { background: rgba(255, 255, 255, 0.2); border: 2px solid transparent; padding: 12px 20px; border-radius: 25px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; }
-    .interval:hover { background: rgba(255, 255, 255, 0.3); }
-    .interval.active { border-color: #fff; background: rgba(255, 255, 255, 0.4); }
-    .display { font-size: 4rem; font-weight: bold; margin: 30px 0; font-family: 'Courier New', monospace; text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
-    .buttons { display: flex; gap: 20px; justify-content: center; margin: 30px 0; }
-    button { padding: 15px 30px; border: none; border-radius: 25px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); }
-    .start { background: linear-gradient(45deg, #4CAF50, #45a049); color: white; }
-    .start:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4); }
-    .stop { background: linear-gradient(45deg, #f44336, #da190b); color: white; }
-    .stop:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4); }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
-    .status { margin-top: 20px; font-size: 1.1rem; opacity: 0.8; }
-    .cycle-counter { margin-top: 10px; font-size: 1rem; opacity: 0.7; color: #ffeb3b; }
-    .info { margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px; font-size: 0.9rem; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIBSHHL Interval Timer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; display: flex; align-items: center; justify-content: center; color: white;
+        }
+        .container { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); border-radius: 20px; padding: 40px; text-align: center; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); min-width: 450px; }
+        h1 { margin-bottom: 30px; font-size: 2rem; }
+        .intervals { display: flex; gap: 15px; justify-content: center; margin-bottom: 30px; }
+        .interval { background: rgba(255, 255, 255, 0.2); border: 2px solid transparent; padding: 12px 20px; border-radius: 25px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; }
+        .interval:hover { background: rgba(255, 255, 255, 0.3); }
+        .interval.active { border-color: #fff; background: rgba(255, 255, 255, 0.4); }
+        .display { font-size: 4rem; font-weight: bold; margin: 30px 0; font-family: 'Courier New', monospace; text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+        .buttons { display: flex; gap: 20px; justify-content: center; margin: 30px 0; }
+        button { padding: 15px 30px; border: none; border-radius: 25px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); }
+        .start { background: linear-gradient(45deg, #4CAF50, #45a049); color: white; }
+        .start:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4); }
+        .stop { background: linear-gradient(45deg, #f44336, #da190b); color: white; }
+        .stop:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4); }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        .status { margin-top: 20px; font-size: 1.1rem; opacity: 0.8; }
+        .cycle-counter { margin-top: 10px; font-size: 1rem; opacity: 0.7; color: #ffeb3b; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>MIBSHHL Interval Timer</h1>
-    <div class="intervals">
-      <div class="interval" data-minutes="1">1 Minute</div>
-      <div class="interval active" data-minutes="2">2 Minutes</div>
-      <div class="interval" data-minutes="3">3 Minutes</div>
+    <div class="container">
+        <h1>MIBSHHL Interval Timer</h1>
+        <div class="intervals">
+            <div class="interval" data-minutes="1">1 Minute</div>
+            <div class="interval active" data-minutes="2">2 Minutes</div>
+            <div class="interval" data-minutes="3">3 Minutes</div>
+        </div>
+        <div class="display" id="display">02:00</div>
+        <div class="buttons">
+            <button class="start" id="startBtn">Start Interval Timer</button>
+            <button class="stop" id="stopBtn">Stop</button>
+        </div>
+        <div class="status" id="status">Ready to start</div>
+        <div class="cycle-counter" id="counter">Cycles completed: 0</div>
     </div>
-    <div class="display" id="display">02:00</div>
-    <div class="buttons">
-      <button class="start" id="startBtn">Start Interval Timer</button>
-      <button class="stop" id="stopBtn">Stop</button>
-    </div>
-    <div class="status" id="status">Ready to start</div>
-    <div class="cycle-counter" id="counter">Cycles completed: 0</div>
-    <div class="info" id="info" style="display: none;">
-      💡 For custom notification icons on iPhone/iPad: Add this page to your Home Screen (Share → Add to Home Screen)
-    </div>
-  </div>
 
-  <script>
-    let countdown = null;
-    let timeLeft = 120; // 2 minutes default
-    let selectedMinutes = 2;
-    let isRunning = false;
-    let audioCtx = null;
-    let cycleCount = 0;
+    <script>
+        let countdown = null;
+        let timeLeft = 120; // 2 minutes default
+        let selectedMinutes = 2;
+        let isRunning = false;
+        let audioCtx = null;
+        let cycleCount = 0;
 
-    // Elements
-    const display = document.getElementById('display');
-    const startBtn = document.getElementById('startBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const status = document.getElementById('status');
-    const counter = document.getElementById('counter');
-    const intervals = document.querySelectorAll('.interval');
-    const info = document.getElementById('info');
+        // Elements
+        const display = document.getElementById('display');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const status = document.getElementById('status');
+        const counter = document.getElementById('counter');
+        const intervals = document.querySelectorAll('.interval');
 
-    // Check if on iOS Safari
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    const isInStandaloneMode = window.navigator.standalone === true;
-    
-    // Show tip for iOS users not in standalone mode
-    if (isIOS && !isInStandaloneMode) {
-      info.style.display = 'block';
-    }
+        // --- Notification helpers (OS-level toast) ---
+        async function ensureNotificationPermission() {
+            if (!('Notification' in window)) return false; // not supported
+            if (Notification.permission === 'granted') return true;
+            try {
+                const p = await Notification.requestPermission();
+                return p === 'granted';
+            } catch { return false; }
+        }
+        function notify(title, body) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification(title, { body });
+            } else {
+                // Fallback to blocking alert if notifications are not available
+                alert(`${title}\n${body || ''}`.trim());
+            }
+        }
 
-    // --- Notification helpers (OS-level toast) ---
-    async function ensureNotificationPermission() {
-      if (!('Notification' in window)) return false; // not supported
-      if (Notification.permission === 'granted') return true;
-      try {
-        const p = await Notification.requestPermission();
-        return p === 'granted';
-      } catch { return false; }
-    }
-    
-    function notify(title, body) {
-      if ('Notification' in window && Notification.permission === 'granted') {
-        // Create notification with ABSOLUTE URL for icon
-        new Notification(title, { 
-          body,
-          icon: 'https://jorn-sinkable.github.io/pops2/hello_hd.png',
-          badge: 'https://jorn-sinkable.github.io/pops2/hello_hd.png',
-          tag: 'timer-notification',
-          requireInteraction: false
+        // Audio init on first interaction
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(freq, duration, volume) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(volume, audioCtx.currentTime + 0.1);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            osc.start(); osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        function updateDisplay() { display.textContent = formatTime(timeLeft); }
+        function updateCounter() { counter.textContent = `Cycles completed: ${cycleCount}`; }
+
+        function startNextCycle() {
+            timeLeft = selectedMinutes * 60;
+            updateDisplay();
+            countdown = setInterval(() => {
+                timeLeft--; updateDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    cycleCount++; updateCounter();
+                    playSound(600, 0.8, 0.1); // end chime
+                    // === Show OS notification at end of each cycle ===
+                    notify('MIBSHHL', `Interval complete (Cycle ${cycleCount}).`);
+                    if (isRunning) startNextCycle();
+                }
+            }, 1000);
+        }
+
+        async function startTimer() {
+            initAudio();
+            playSound(800, 0.3, 0.05); // start chime
+            await ensureNotificationPermission(); // ask once on start
+
+            isRunning = true; cycleCount = 0;
+            startBtn.disabled = true; startBtn.textContent = 'Running...';
+            status.textContent = `Interval timer running (${selectedMinutes} min cycles)`;
+            intervals.forEach(int => int.style.pointerEvents = 'none');
+            updateCounter(); startNextCycle();
+        }
+
+        function stopTimer() {
+            if (countdown) clearInterval(countdown);
+            resetTimer();
+        }
+
+        function resetTimer() {
+            isRunning = false; cycleCount = 0; timeLeft = selectedMinutes * 60;
+            startBtn.disabled = false; startBtn.textContent = 'Start Interval Timer';
+            status.textContent = 'Ready to start';
+            intervals.forEach(int => int.style.pointerEvents = 'auto');
+            updateDisplay(); updateCounter();
+        }
+
+        // Events
+        startBtn.addEventListener('click', startTimer);
+        stopBtn.addEventListener('click', stopTimer);
+        intervals.forEach(interval => {
+            interval.addEventListener('click', () => {
+                if (!isRunning) {
+                    intervals.forEach(int => int.classList.remove('active'));
+                    interval.classList.add('active');
+                    selectedMinutes = parseInt(interval.dataset.minutes);
+                    timeLeft = selectedMinutes * 60; updateDisplay();
+                }
+            });
         });
-      } else {
-        alert(`${title}\n${body || ''}`.trim());
-      }
-    }
 
-    // Audio init on first interaction
-    function initAudio() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-    }
-
-    function playSound(freq, duration, volume) {
-      if (!audioCtx) return;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      osc.frequency.value = freq;
-      gain.gain.setValueAtTime(0, audioCtx.currentTime);
-      gain.gain.linearRampToValueAtTime(volume, audioCtx.currentTime + 0.1);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-      osc.start(); osc.stop(audioCtx.currentTime + duration);
-    }
-
-    function formatTime(seconds) {
-      const mins = Math.floor(seconds / 60);
-      const secs = seconds % 60;
-      return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }
-    function updateDisplay() { display.textContent = formatTime(timeLeft); }
-    function updateCounter() { counter.textContent = `Cycles completed: ${cycleCount}`; }
-
-    function startNextCycle() {
-      timeLeft = selectedMinutes * 60;
-      updateDisplay();
-      countdown = setInterval(() => {
-        timeLeft--; updateDisplay();
-        if (timeLeft <= 0) {
-          clearInterval(countdown);
-          cycleCount++; updateCounter();
-          playSound(600, 0.8, 0.1); // end chime
-          // === Show OS notification at end of each cycle ===
-          notify('MIBSHHL', `Interval complete (Cycle ${cycleCount}).`);
-          if (isRunning) startNextCycle();
-        }
-      }, 1000);
-    }
-
-    async function startTimer() {
-      initAudio();
-      playSound(800, 0.3, 0.05); // start chime
-      await ensureNotificationPermission(); // ask once on start
-
-      isRunning = true; cycleCount = 0;
-      startBtn.disabled = true; startBtn.textContent = 'Running...';
-      status.textContent = `Interval timer running (${selectedMinutes} min cycles)`;
-      intervals.forEach(int => int.style.pointerEvents = 'none');
-      updateCounter(); startNextCycle();
-    }
-
-    function stopTimer() {
-      if (countdown) clearInterval(countdown);
-      resetTimer();
-    }
-
-    function resetTimer() {
-      isRunning = false; cycleCount = 0; timeLeft = selectedMinutes * 60;
-      startBtn.disabled = false; startBtn.textContent = 'Start Interval Timer';
-      status.textContent = 'Ready to start';
-      intervals.forEach(int => int.style.pointerEvents = 'auto');
-      updateDisplay(); updateCounter();
-    }
-
-    // Events
-    startBtn.addEventListener('click', startTimer);
-    stopBtn.addEventListener('click', stopTimer);
-    intervals.forEach(interval => {
-      interval.addEventListener('click', () => {
-        if (!isRunning) {
-          intervals.forEach(int => int.classList.remove('active'));
-          interval.classList.add('active');
-          selectedMinutes = parseInt(interval.dataset.minutes);
-          timeLeft = selectedMinutes * 60; updateDisplay();
-        }
-      });
-    });
-
-    // Init
-    updateDisplay(); updateCounter();
-  </script>
+        // Init
+        updateDisplay(); updateCounter();
+    </script>
 </body>
 </html>
+
+
 
