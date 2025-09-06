@@ -1,18 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MIBSHHL Interval Timer</title>
 
-  <!-- ===== Site Icons (Safari uses these for notifications) ===== -->
-  <link rel="icon" type="image/png" sizes="128x128" href="./hello_hd.png?v=2">
-  <link rel="icon" type="image/png" sizes="32x32"  href="./hello_hd.png?v=2">
-  <link rel="apple-touch-icon" sizes="180x180" href="./hello_hd.png?v=2">
-  <meta name="theme-color" content="#000000" />
-  <!-- Optional if you later add a monochrome SVG:
-  <link rel="mask-icon" href="./pinned.svg" color="#000000">
-  -->
+  <!-- Safari Notification Icons - CRITICAL: Use exact sizes -->
+  <link rel="icon" type="image/png" sizes="16x16" href="hello_hd.png?v=4">
+  <link rel="icon" type="image/png" sizes="32x32" href="hello_hd.png?v=4">
+  <link rel="icon" type="image/png" sizes="128x128" href="hello_hd.png?v=4">
+  
+  <!-- Apple Touch Icons - Safari uses these for notifications -->
+  <link rel="apple-touch-icon" href="hello_hd.png?v=4">
+  <link rel="apple-touch-icon" sizes="120x120" href="hello_hd.png?v=4">
+  <link rel="apple-touch-icon" sizes="152x152" href="hello_hd.png?v=4">
+  <link rel="apple-touch-icon" sizes="180x180" href="hello_hd.png?v=4">
+  
+  <!-- Force Safari to refresh icon -->
+  <link rel="shortcut icon" href="hello_hd.png?v=4">
+  
+  <meta name="apple-mobile-web-app-title" content="MIBSHHL">
+  <meta name="application-name" content="MIBSHHL">
+  <meta name="theme-color" content="#667eea">
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -81,11 +90,16 @@
         return p === 'granted';
       } catch { return false; }
     }
-
-    // Safari ignores the `icon` option and uses the page icon (set in <head>)
+    
     function notify(title, body) {
       if ('Notification' in window && Notification.permission === 'granted') {
-        new Notification(title, { body });
+        // Include the icon parameter for browsers that support it
+        // Safari will ignore this and use the apple-touch-icon instead
+        new Notification(title, { 
+          body,
+          icon: 'hello_hd.png',
+          badge: 'hello_hd.png'
+        });
       } else {
         alert(`${title}\n${body || ''}`.trim());
       }
